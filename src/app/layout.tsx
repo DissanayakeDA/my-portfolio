@@ -19,8 +19,11 @@ const syncopate = Syncopate({
 import CustomCursor from "@/components/CustomCursor";
 
 export const metadata: Metadata = {
-  title: 'Dumindu Dissanayake | Developer Portfolio',
-  description: 'Building the future at HashBaze & Kyndexlab.',
+  title: 'Dumindu Dissanayake',
+  description: 'Full Stack Developer building the future at HashBaze.',
+  icons: {
+    icon: '/icon.svg',
+  },
 };
 
 export default function RootLayout({
