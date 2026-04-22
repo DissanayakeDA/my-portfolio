@@ -9,6 +9,7 @@ import Navbar from "@/components/Navbar";
 import Magnetic from "@/components/Magnetic";
 import Skills from "@/components/Skills";
 import Contact from "@/components/Contact";
+import LiveProjects from "@/components/LiveProjects";
 
 export default function Home() {
   return (
@@ -74,6 +75,10 @@ export default function Home() {
           <ExperienceTimeline />
         </section>
         
+        <section id="live">
+          <LiveProjects />
+        </section>
+
         <section id="work">
           <BentoGrid />
         </section>
