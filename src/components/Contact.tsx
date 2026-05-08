@@ -11,16 +11,56 @@ export default function Contact() {
     subject: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const { name, email, subject, message } = formState;
-    const mailtoLink = `mailto:dumindudissanayake2k01@gmail.com?subject=${encodeURIComponent(
-      subject
-    )}&body=${encodeURIComponent(
-      `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`
-    )}`;
-    window.location.href = mailtoLink;
+    setIsSubmitting(true);
+    setSubmitMessage(null);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formState),
+      });
+
+      const data = (await response.json().catch(() => null)) as {
+        message?: string;
+      } | null;
+
+      if (!response.ok) {
+        throw new Error(data?.message || "Failed to send your message.");
+      }
+
+      setSubmitMessage({
+        type: "success",
+        text: data?.message || "Message sent successfully.",
+      });
+      setFormState({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to send your message. Please try again.";
+      setSubmitMessage({
+        type: "error",
+        text: message,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (
@@ -174,11 +214,26 @@ export default function Contact() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               type="submit"
-              className="w-full bg-primary text-black font-bold py-4 rounded-lg flex items-center justify-center gap-2 hover:bg-orange-500 transition-colors"
+              disabled={isSubmitting}
+              className="w-full bg-primary text-black font-bold py-4 rounded-lg flex items-center justify-center gap-2 hover:bg-orange-500 transition-colors disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:bg-primary"
             >
               <Send className="w-5 h-5" />
-              <span>SEND MESSAGE</span>
+              <span>{isSubmitting ? "SENDING..." : "SEND MESSAGE"}</span>
             </motion.button>
+
+            {submitMessage && (
+              <p
+                className={`text-sm ${
+                  submitMessage.type === "success"
+                    ? "text-emerald-400"
+                    : "text-red-400"
+                }`}
+                role="status"
+                aria-live="polite"
+              >
+                {submitMessage.text}
+              </p>
+            )}
           </form>
         </motion.div>
       </div>

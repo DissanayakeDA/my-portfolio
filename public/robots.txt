@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dumindu.me/sitemap.xml

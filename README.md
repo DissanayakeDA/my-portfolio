@@ -18,6 +18,19 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
+## Contact Form Email Setup
+
+The **LET'S TALK** form now sends email through a server-side API route (`POST /api/contact`) using [Resend](https://resend.com).
+
+1. Copy `.env.example` to `.env.local`.
+2. Set these variables:
+   - `RESEND_API_KEY`: Your Resend API key.
+   - `CONTACT_FROM_EMAIL`: Sender email value accepted by Resend (use a verified domain in production).
+   - `CONTACT_TO_EMAIL`: Inbox address that should receive form submissions.
+3. Run `npm run dev` and submit the form from the contact section.
+
+If these variables are missing, the API returns a configuration error and the UI shows the failure message.
+
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More
