@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter, Syncopate } from 'next/font/google';
 import './globals.css';
 import SmoothScroll from '@/components/SmoothScroll';
@@ -26,6 +26,13 @@ export const metadata: Metadata = {
     template: '%s | Dumindu Dissanayake',
   },
   description: 'Dumindu Dissanayake is a Full Stack Developer at HashBaze, specializing in React, Next.js, TypeScript, Java, and cloud technologies. Building modern, high-performance web applications.',
+  applicationName: 'Dumindu Dissanayake Portfolio',
+  category: 'technology',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   keywords: [
     'Dumindu',
     'Dumindu Dissanayake',
@@ -74,27 +81,72 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: '#000000',
+  colorScheme: 'dark',
+  width: 'device-width',
+  initialScale: 1,
+};
+
+const personId = `${siteUrl}/#person`;
+
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: 'Dumindu Dissanayake',
-  givenName: 'Dumindu',
-  familyName: 'Dissanayake',
-  jobTitle: 'Full Stack Developer',
-  url: siteUrl,
-  email: 'dumindudissanayake2k01@gmail.com',
-  worksFor: {
-    '@type': 'Organization',
-    name: 'HashBaze',
-  },
-  knowsAbout: [
-    'React', 'Next.js', 'TypeScript', 'JavaScript', 'Java',
-    'Python', 'Docker', 'AWS', 'Azure', 'Angular', '.NET',
-    'Full Stack Development', 'Web Development',
-  ],
-  sameAs: [
-    'https://github.com/DissanayakeDA',
-    'https://www.linkedin.com/in/dumindu-dissanayake-24168b31a/',
+  '@graph': [
+    {
+      '@type': 'Person',
+      '@id': personId,
+      name: 'Dumindu Dissanayake',
+      givenName: 'Dumindu',
+      familyName: 'Dissanayake',
+      jobTitle: 'Full Stack Developer',
+      description:
+        'Full Stack Developer at HashBaze building modern web applications with React, Next.js, TypeScript, and Java.',
+      url: siteUrl,
+      image: `${siteUrl}/opengraph-image`,
+      email: 'dumindudissanayake2k01@gmail.com',
+      nationality: 'Sri Lankan',
+      address: {
+        '@type': 'PostalAddress',
+        addressCountry: 'LK',
+      },
+      worksFor: {
+        '@type': 'Organization',
+        name: 'HashBaze',
+      },
+      alumniOf: {
+        '@type': 'CollegeOrUniversity',
+        name: 'Sri Lanka Institute of Information Technology (SLIIT)',
+      },
+      knowsAbout: [
+        'React', 'Next.js', 'TypeScript', 'JavaScript', 'Java',
+        'Python', 'Docker', 'AWS', 'Azure', 'Angular', '.NET',
+        'Full Stack Development', 'Web Development',
+      ],
+      sameAs: [
+        'https://github.com/DissanayakeDA',
+        'https://www.linkedin.com/in/dumindu-dissanayake-24168b31a/',
+      ],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${siteUrl}/#website`,
+      url: siteUrl,
+      name: 'Dumindu Dissanayake | Full Stack Developer',
+      description:
+        'Portfolio of Dumindu Dissanayake, a Full Stack Developer at HashBaze.',
+      inLanguage: 'en',
+      publisher: { '@id': personId },
+    },
+    {
+      '@type': 'ProfilePage',
+      '@id': `${siteUrl}/#profilepage`,
+      url: siteUrl,
+      name: 'Dumindu Dissanayake | Full Stack Developer',
+      isPartOf: { '@id': `${siteUrl}/#website` },
+      about: { '@id': personId },
+      inLanguage: 'en',
+    },
   ],
 };
 
