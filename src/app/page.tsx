@@ -1,5 +1,3 @@
-"use client";
-
 import { Fragment } from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
@@ -11,10 +9,16 @@ import Services from "@/components/Services";
 import ExperienceTimeline from "@/components/ExperienceTimeline";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import { getProjects } from "@/lib/projects";
+
+// Re-render at most hourly so GitHub repos stay fresh without hitting rate limits
+export const revalidate = 3600;
 
 const MARQUEE_WORDS = ["Build", "Motion", "Next.js", "Interfaces", "APIs", "Cloud", "Ship"];
 
-export default function Home() {
+export default async function Home() {
+  const projects = await getProjects();
+
   return (
     <main className="min-h-screen bg-background text-foreground overflow-x-clip">
       <Navbar />
@@ -36,29 +40,29 @@ export default function Home() {
         </Marquee>
       </div>
 
-      <section id="work">
-        <SelectedWork />
-      </section>
+      <div id="work" className="scroll-mt-16">
+        <SelectedWork projects={projects} />
+      </div>
 
-      <section id="about">
+      <div id="about" className="scroll-mt-16">
         <About />
-      </section>
+      </div>
 
-      <section id="skills">
+      <div id="skills" className="scroll-mt-16">
         <Skills />
-      </section>
+      </div>
 
-      <section id="services">
+      <div id="services" className="scroll-mt-16">
         <Services />
-      </section>
+      </div>
 
-      <section id="experience">
+      <div id="experience" className="scroll-mt-16">
         <ExperienceTimeline />
-      </section>
+      </div>
 
-      <section id="contact">
+      <div id="contact" className="scroll-mt-16">
         <Contact />
-      </section>
+      </div>
 
       <Footer />
     </main>

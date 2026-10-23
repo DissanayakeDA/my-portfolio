@@ -7,6 +7,8 @@ import LocalTime from "@/components/LocalTime";
 import RollText from "@/components/RollText";
 import RevealText from "@/components/RevealText";
 
+const SECTIONS = ["Work", "About", "Skills", "Services", "Experience", "Contact"];
+
 const SOCIALS = [
   { name: "GitHub", href: "https://github.com/DissanayakeDA" },
   { name: "LinkedIn", href: "https://www.linkedin.com/in/dumindu-dissanayake-24168b31a/" },
@@ -38,7 +40,7 @@ export default function Footer() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8, delay: 0.3 }}
-        className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 label text-foreground/50"
+        className="mt-16 grid grid-cols-2 md:grid-cols-5 gap-8 label text-foreground/50"
       >
         <div className="space-y-2">
           <p>(Local time)</p>
@@ -46,6 +48,27 @@ export default function Footer() {
             <LocalTime />
           </p>
         </div>
+        <nav aria-label="Sections" className="space-y-2">
+          <p>(Index)</p>
+          <ul className="space-y-1">
+            {SECTIONS.map((s) => (
+              <li key={s}>
+                <a
+                  href={`#${s.toLowerCase()}`}
+                  onClick={(e) => {
+                    const el = document.getElementById(s.toLowerCase());
+                    if (!el || !lenis) return;
+                    e.preventDefault();
+                    lenis.scrollTo(el, { duration: 1.6 });
+                  }}
+                  className="group text-foreground hover:text-primary transition-colors"
+                >
+                  <RollText>{s}</RollText>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
         <div className="space-y-2">
           <p>(Socials)</p>
           <ul className="space-y-1">

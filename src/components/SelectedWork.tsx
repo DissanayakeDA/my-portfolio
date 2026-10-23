@@ -1,69 +1,13 @@
 "use client";
 
 import { AnimatePresence, motion, useInView } from "framer-motion";
-import { ArrowUpRight, Loader2 } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import SectionHeading from "@/components/SectionHeading";
 import { useMotionPause } from "@/components/MotionPause";
+import { GITHUB_USERNAME, type Project } from "@/lib/projects";
 
-const GITHUB_USERNAME = "DissanayakeDA";
-const MAX_REPOS = 5;
 const EASE_IN_OUT = [0.76, 0, 0.24, 1] as const;
-
-interface GitHubRepo {
-  id: number;
-  name: string;
-  html_url: string;
-  description: string | null;
-  language: string | null;
-  stargazers_count: number;
-  fork: boolean;
-  updated_at: string;
-}
-
-interface Project {
-  key: string;
-  title: string;
-  category: string;
-  year: string;
-  href: string;
-  description: string;
-  tags: string[];
-  /** Preview image; when absent a typographic poster is rendered */
-  image?: string;
-  live?: boolean;
-}
-
-const LIVE_PROJECTS: Project[] = [
-  {
-    key: "onlinephysics",
-    title: "OnlinePhysics",
-    category: "Live platform",
-    year: "2025",
-    href: "https://onlinephysics.lk",
-    description:
-      "An online physics learning platform for Sri Lankan students — interactive lessons, practice problems and resources aligned with the local curriculum.",
-    tags: ["Education", "E-Learning", "Production"],
-    live: true,
-  },
-];
-
-const prettify = (name: string) => name.replace(/[-_]/g, " ");
-
-function toProject(repo: GitHubRepo): Project {
-  return {
-    key: String(repo.id),
-    title: prettify(repo.name),
-    category: repo.language ?? "Repository",
-    year: new Date(repo.updated_at).getFullYear().toString(),
-    href: repo.html_url,
-    description: repo.description || "Source code and documentation on GitHub.",
-    tags: [repo.language, repo.stargazers_count > 0 ? `★ ${repo.stargazers_count}` : null].filter(
-      (t): t is string => !!t
-    ),
-    image: `https://opengraph.githubassets.com/1/${GITHUB_USERNAME}/${repo.name}`,
-  };
-}
 
 function Preview({ project }: { project: Project }) {
   const [failed, setFailed] = useState(false);
@@ -161,38 +105,9 @@ function WorkRow({
   );
 }
 
-export default function SelectedWork() {
-  const [projects, setProjects] = useState<Project[]>(LIVE_PROJECTS);
-  const [loading, setLoading] = useState(true);
+export default function SelectedWork({ projects }: { projects: Project[] }) {
   const [active, setActive] = useState(0);
   const { paused, toggle } = useMotionPause();
-
-  useEffect(() => {
-    async function fetchRepos() {
-      try {
-        const res = await fetch(
-          `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100`
-        );
-        if (!res.ok) throw new Error("Failed to fetch repos");
-        const data: GitHubRepo[] = await res.json();
-        const repos = data
-          .filter((r) => r.name !== GITHUB_USERNAME && !r.fork)
-          .sort(
-            (a, b) =>
-              b.stargazers_count - a.stargazers_count ||
-              new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
-          )
-          .slice(0, MAX_REPOS)
-          .map(toProject);
-        setProjects([...LIVE_PROJECTS, ...repos]);
-      } catch {
-        // Live projects still render if GitHub is unreachable or rate-limited
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchRepos();
-  }, []);
 
   const current = projects[Math.min(active, projects.length - 1)];
   const total = projects.length;
@@ -212,11 +127,6 @@ export default function SelectedWork() {
           {projects.map((p, i) => (
             <WorkRow key={p.key} project={p} index={i} total={total} active={i === active} onActive={setActive} />
           ))}
-          {loading && (
-            <div className="flex items-center gap-3 py-10 label text-foreground/50 border-t border-border">
-              <Loader2 className="h-4 w-4 animate-spin text-primary" /> Fetching repositories
-            </div>
-          )}
         </div>
 
         <div className="hidden lg:block lg:col-span-5">

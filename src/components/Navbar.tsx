@@ -57,7 +57,8 @@ export default function Navbar() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  const scrollTo = (id: string) => {
+  const scrollTo = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
     setMenuOpen(false);
     const el = document.getElementById(id);
     if (!el) return;
@@ -126,12 +127,13 @@ export default function Navbar() {
             <ul className="border-t border-border">
               {navLinks.map((link, i) => (
                 <li key={link.name} className="border-b border-border overflow-hidden">
-                  <motion.button
+                  <motion.a
+                    href={`#${link.href}`}
                     initial={{ y: "100%" }}
                     animate={{ y: "0%" }}
                     exit={{ y: "100%" }}
                     transition={{ duration: 0.8, ease: EASE_OUT, delay: 0.25 + i * 0.06 }}
-                    onClick={() => scrollTo(link.href)}
+                    onClick={(e) => scrollTo(e, link.href)}
                     className="group w-full flex items-center justify-between py-1 md:py-0 text-left"
                   >
                     <span
@@ -142,7 +144,7 @@ export default function Navbar() {
                     <span className="label text-foreground/40 group-hover:text-primary transition-colors">
                       ({String(i + 1).padStart(2, "0")})
                     </span>
-                  </motion.button>
+                  </motion.a>
                 </li>
               ))}
             </ul>

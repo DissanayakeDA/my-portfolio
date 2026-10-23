@@ -35,7 +35,7 @@ export default function Hero() {
         <span>(Based in Colombo, LK)</span>
       </motion.div>
 
-      <motion.h1 style={{ y, opacity }} className="font-display uppercase leading-[0.82] text-[15vw] md:text-[15.5vw] whitespace-nowrap my-10">
+      <motion.h1 aria-label="Dumindu Dissanayake" style={{ y, opacity }} className="font-display uppercase leading-[0.82] text-[15vw] md:text-[15.5vw] whitespace-nowrap my-10">
         <RevealText
           onLoad
           stagger={0.12}

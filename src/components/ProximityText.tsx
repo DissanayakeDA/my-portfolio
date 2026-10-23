@@ -74,9 +74,9 @@ export default function ProximityText({ text, className }: { text: string; class
   }, [paused]);
 
   return (
-    <span ref={ref} className={className} aria-label={text}>
+    <span ref={ref} className={className}>
       {Array.from(text).map((ch, i) => (
-        <span key={i} data-letter aria-hidden className="inline-block type-condensed">
+        <span key={i} data-letter className="inline-block type-condensed">
           {ch}
         </span>
       ))}

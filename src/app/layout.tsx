@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     default: 'Dumindu Dissanayake | Full Stack Developer',
     template: '%s | Dumindu Dissanayake',
   },
-  description: 'Dumindu Dissanayake is a Full Stack Developer at HashBaze, specializing in React, Next.js, TypeScript, Java, and cloud technologies. Building modern, high-performance web applications.',
+  description: 'Dumindu Dissanayake is a Full Stack Developer at HashBaze in Colombo, Sri Lanka, specializing in React, Next.js, TypeScript, Java and cloud. See selected work, skills and experience.',
   applicationName: 'Dumindu Dissanayake Portfolio',
   category: 'technology',
   formatDetection: {
@@ -48,6 +48,10 @@ export const metadata: Metadata = {
     'Web Developer',
     'Software Engineer',
     'Sri Lanka',
+    'Colombo',
+    'Full Stack Developer Sri Lanka',
+    'Next.js Developer Sri Lanka',
+    'OnlinePhysics.lk',
   ],
   authors: [{ name: 'Dumindu Dissanayake', url: siteUrl }],
   creator: 'Dumindu Dissanayake',
@@ -82,6 +86,13 @@ export const metadata: Metadata = {
   icons: {
     icon: '/icon.svg',
   },
+  // Set NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION / NEXT_PUBLIC_BING_SITE_VERIFICATION to verify ownership
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+    other: process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+      ? { 'msvalidate.01': process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION }
+      : undefined,
+  },
 };
 
 export const viewport: Viewport = {
@@ -111,6 +122,7 @@ const jsonLd = {
       nationality: 'Sri Lankan',
       address: {
         '@type': 'PostalAddress',
+        addressLocality: 'Colombo',
         addressCountry: 'LK',
       },
       worksFor: {
@@ -130,6 +142,16 @@ const jsonLd = {
         'https://github.com/DissanayakeDA',
         'https://www.linkedin.com/in/dumindu-dissanayake-24168b31a/',
       ],
+      workExample: [
+        {
+          '@type': 'WebSite',
+          name: 'OnlinePhysics.lk',
+          url: 'https://onlinephysics.lk',
+          description:
+            'Online physics learning platform for Sri Lankan students with interactive lessons and practice problems.',
+          creator: { '@id': personId },
+        },
+      ],
     },
     {
       '@type': 'WebSite',
@@ -147,7 +169,10 @@ const jsonLd = {
       url: siteUrl,
       name: 'Dumindu Dissanayake | Full Stack Developer',
       isPartOf: { '@id': `${siteUrl}/#website` },
+      // Google's ProfilePage rich result requires mainEntity
+      mainEntity: { '@id': personId },
       about: { '@id': personId },
+      dateModified: new Date().toISOString(),
       inLanguage: 'en',
     },
   ],

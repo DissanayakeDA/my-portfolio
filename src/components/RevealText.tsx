@@ -34,6 +34,8 @@ export default function RevealText({
         };
         return (
           <span key={i} className="block overflow-hidden pb-[0.08em] -mb-[0.08em]">
+            {/* Word break for crawlers/screen readers; lines are visually stacked */}
+            {i > 0 && " "}
             <motion.span
               className={`block will-change-transform ${lineClassName ?? ""}`}
               initial={{ y: "110%", rotate: 3 }}
