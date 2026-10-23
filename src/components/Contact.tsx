@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Mail, MapPin, Phone, Send } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useState } from "react";
+import SectionHeading from "@/components/SectionHeading";
 
 export default function Contact() {
   const [formState, setFormState] = useState({
@@ -72,131 +73,89 @@ export default function Contact() {
     });
   };
 
+  const inputClass =
+    "peer w-full bg-transparent border-b border-border py-4 text-lg md:text-xl text-foreground placeholder:text-foreground/25 focus:outline-none focus:border-primary transition-colors";
+
+  const fields = [
+    { id: "name", label: "What's your name?", placeholder: "John Doe", type: "text" },
+    { id: "email", label: "Your email", placeholder: "john@example.com", type: "email" },
+    { id: "subject", label: "What's it about?", placeholder: "Project inquiry", type: "text" },
+  ] as const;
+
+  const details = [
+    { label: "Email", value: "dumindudissanayake2k01@gmail.com", href: "mailto:dumindudissanayake2k01@gmail.com" },
+    { label: "Phone", value: "+94 77 248 49 30", href: "tel:+94772484930" },
+    { label: "Location", value: "Colombo, Sri Lanka" },
+  ];
+
   return (
-    <section className="py-24 px-4 max-w-7xl mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
-        {/* Contact Info */}
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          whileInView={{ opacity: 1, x: 0 }}
+    <section className="px-[var(--gutter)] py-24 md:py-36">
+      <SectionHeading
+        index="06 / 06"
+        label="Contact"
+        title="Start a"
+        accent="project"
+        aside="Have a project in mind or just want to say hi? I'm always open to new ideas and opportunities."
+      />
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+        <motion.dl
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="lg:col-span-4 space-y-8"
         >
-          <h2 className="text-4xl md:text-6xl font-bold font-syncopate mb-6">
-            LET&apos;S <span className="text-primary">TALK</span>
-          </h2>
-          <p className="text-gray-400 text-lg mb-12 max-w-md">
-            Have a project in mind or just want to say hi? I&apos;m always open
-            to discussing new projects, creative ideas or opportunities to be
-            part of your visions.
-          </p>
-
-          <div className="space-y-8">
-            <div className="flex items-start gap-4 group">
-              <div className="p-3 bg-white/5 rounded-full group-hover:bg-primary/20 transition-colors">
-                <Mail className="w-6 h-6 text-primary" />
-              </div>
-              <div>
-                <h3 className="text-white font-bold mb-1">Email Me</h3>
-                <p className="text-gray-400">dumindudissanayake2k01@gmail.com</p>
-              </div>
+          {details.map((d) => (
+            <div key={d.label}>
+              <dt className="label text-foreground/50 mb-2">({d.label})</dt>
+              <dd className="text-lg md:text-xl break-words">
+                {d.href ? (
+                  <a href={d.href} className="hover:text-primary transition-colors">
+                    {d.value}
+                  </a>
+                ) : (
+                  d.value
+                )}
+              </dd>
             </div>
+          ))}
+        </motion.dl>
 
-            <div className="flex items-start gap-4 group">
-              <div className="p-3 bg-white/5 rounded-full group-hover:bg-primary/20 transition-colors">
-                <Phone className="w-6 h-6 text-primary" />
-              </div>
-              <div>
-                <h3 className="text-white font-bold mb-1">Call Me</h3>
-                <p className="text-gray-400">+94 77 248 49 30</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4 group">
-              <div className="p-3 bg-white/5 rounded-full group-hover:bg-primary/20 transition-colors">
-                <MapPin className="w-6 h-6 text-primary" />
-              </div>
-              <div>
-                <h3 className="text-white font-bold mb-1">Location</h3>
-                <p className="text-gray-400">Colombo, Sri Lanka</p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Contact Form */}
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          whileInView={{ opacity: 1, x: 0 }}
+        <motion.form
+          onSubmit={handleSubmit}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="glass-panel p-8 rounded-3xl border border-white/10"
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+          className="lg:col-span-8 space-y-8"
         >
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label
-                  htmlFor="name"
-                  className="text-sm font-medium text-gray-400"
-                >
-                  Name
+          {fields.map((f, i) => (
+            <div key={f.id} className="flex gap-4 md:gap-8">
+              <span className="label text-foreground/40 pt-6">({String(i + 1).padStart(2, "0")})</span>
+              <div className="flex-1">
+                <label htmlFor={f.id} className="label text-foreground/60">
+                  {f.label}
                 </label>
                 <input
-                  type="text"
-                  id="name"
-                  name="name"
+                  type={f.type}
+                  id={f.id}
+                  name={f.id}
                   required
-                  value={formState.name}
+                  value={formState[f.id]}
                   onChange={handleChange}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-                  placeholder="John Doe"
-                />
-              </div>
-              <div className="space-y-2">
-                <label
-                  htmlFor="email"
-                  className="text-sm font-medium text-gray-400"
-                >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  required
-                  value={formState.email}
-                  onChange={handleChange}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-                  placeholder="john@example.com"
+                  className={inputClass}
+                  placeholder={f.placeholder}
                 />
               </div>
             </div>
+          ))}
 
-            <div className="space-y-2">
-              <label
-                htmlFor="subject"
-                className="text-sm font-medium text-gray-400"
-              >
-                Subject
-              </label>
-              <input
-                type="text"
-                id="subject"
-                name="subject"
-                required
-                value={formState.subject}
-                onChange={handleChange}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-                placeholder="Project Inquiry"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label
-                htmlFor="message"
-                className="text-sm font-medium text-gray-400"
-              >
-                Message
+          <div className="flex gap-4 md:gap-8">
+            <span className="label text-foreground/40 pt-6">(04)</span>
+            <div className="flex-1">
+              <label htmlFor="message" className="label text-foreground/60">
+                Your message
               </label>
               <textarea
                 id="message"
@@ -205,37 +164,38 @@ export default function Contact() {
                 rows={4}
                 value={formState.message}
                 onChange={handleChange}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors resize-none"
+                className={`${inputClass} resize-none`}
                 placeholder="Tell me about your project..."
               />
             </div>
+          </div>
 
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-primary text-black font-bold py-4 rounded-lg flex items-center justify-center gap-2 hover:bg-orange-500 transition-colors disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:bg-primary"
-            >
-              <Send className="w-5 h-5" />
-              <span>{isSubmitting ? "SENDING..." : "SEND MESSAGE"}</span>
-            </motion.button>
-
-            {submitMessage && (
+          <div className="flex flex-col sm:flex-row sm:items-center gap-6 sm:justify-between pt-4">
+            {submitMessage ? (
               <p
-                className={`text-sm ${
-                  submitMessage.type === "success"
-                    ? "text-emerald-400"
-                    : "text-red-400"
-                }`}
+                className={`label ${submitMessage.type === "success" ? "text-primary" : "text-red-400"}`}
                 role="status"
                 aria-live="polite"
               >
                 {submitMessage.text}
               </p>
+            ) : (
+              <span />
             )}
-          </form>
-        </motion.div>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              data-cursor="Send"
+              className="group relative overflow-hidden rounded-full border border-foreground px-8 py-4 label font-bold text-foreground hover:text-background disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-500"
+            >
+              <span className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+              <span className="relative flex items-center gap-3">
+                {isSubmitting ? "Sending..." : "Send message"}
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </span>
+            </button>
+          </div>
+        </motion.form>
       </div>
     </section>
   );

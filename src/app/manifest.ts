@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
       'Portfolio of Dumindu Dissanayake, a Full Stack Developer building modern web applications with React, Next.js, TypeScript, and Java.',
     start_url: '/',
     display: 'standalone',
-    background_color: '#000000',
-    theme_color: '#FF6B00',
+    background_color: '#111010',
+    theme_color: '#7B9CFF',
     categories: ['portfolio', 'technology', 'business'],
     icons: [
       {

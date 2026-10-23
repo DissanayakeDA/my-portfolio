@@ -4,7 +4,7 @@ export const alt = 'Dumindu Dissanayake — Full Stack Developer';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-const PRIMARY = '#FF6B00';
+const PRIMARY = '#7B9CFF';
 
 export default function Image() {
   return new ImageResponse(
@@ -16,7 +16,7 @@ export default function Image() {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          background: '#000000',
+          background: '#111010',
           position: 'relative',
           padding: '80px',
           fontFamily: 'sans-serif',

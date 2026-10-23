@@ -1,136 +1,89 @@
 "use client";
 
-import { motion } from "framer-motion";
-import React from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
+import SectionHeading from "@/components/SectionHeading";
+
+const DEVICON = "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons";
 
 const SKILLS = [
-  {
-    name: "JavaScript",
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg",
-    color: "from-yellow-400/20 to-yellow-600/5",
-  },
-  {
-    name: "Java",
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg",
-    color: "from-red-500/20 to-red-700/5",
-  },
-  {
-    name: "Python",
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg",
-    color: "from-blue-400/20 to-yellow-400/5",
-  },
-  {
-    name: ".NET",
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dot-net/dot-net-original.svg",
-    color: "from-purple-500/20 to-purple-700/5",
-  },
-  {
-    name: "React",
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg",
-    color: "from-cyan-400/20 to-blue-500/5",
-  },
-  {
-    name: "Angular",
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/angular/angular-original.svg",
-    color: "from-red-600/20 to-red-800/5",
-  },
-  {
-    name: "TypeScript",
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg",
-    color: "from-blue-600/20 to-blue-800/5",
-  },
-  {
-    name: "Docker",
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg",
-    color: "from-blue-500/20 to-cyan-500/5",
-  },
-  {
-    name: "AWS",
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/amazonwebservices/amazonwebservices-original-wordmark.svg",
-    color: "from-orange-500/20 to-yellow-500/5",
-  },
-  {
-    name: "Azure",
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/azure/azure-original.svg",
-    color: "from-blue-600/20 to-indigo-600/5",
-  },
+  { name: "TypeScript", area: "Language", logo: `${DEVICON}/typescript/typescript-original.svg` },
+  { name: "React", area: "Frontend", logo: `${DEVICON}/react/react-original.svg` },
+  { name: "Next.js", area: "Framework", logo: `${DEVICON}/nextjs/nextjs-original.svg`, invert: true },
+  { name: "JavaScript", area: "Language", logo: `${DEVICON}/javascript/javascript-original.svg` },
+  { name: "Angular", area: "Frontend", logo: `${DEVICON}/angular/angular-original.svg` },
+  { name: "Java", area: "Backend", logo: `${DEVICON}/java/java-original.svg` },
+  { name: ".NET", area: "Backend", logo: `${DEVICON}/dot-net/dot-net-original.svg` },
+  { name: "Python", area: "Language", logo: `${DEVICON}/python/python-original.svg` },
+  { name: "Docker", area: "DevOps", logo: `${DEVICON}/docker/docker-original.svg` },
+  { name: "AWS", area: "Cloud", logo: `${DEVICON}/amazonwebservices/amazonwebservices-plain-wordmark.svg`, invert: true },
+  { name: "Azure", area: "Cloud", logo: `${DEVICON}/azure/azure-original.svg` },
 ];
 
-const container = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
-
-const item = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0 },
-};
-
+// Horizontal "up close" gallery: drag it, or let scroll drift it sideways.
 export default function Skills() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] });
+  const drift = useTransform(scrollYProgress, [0, 1], ["8%", "-28%"]);
+
   return (
-    <section className="py-24 px-4 max-w-7xl mx-auto">
-      <motion.div
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true }}
-        variants={container}
-        className="space-y-12"
-      >
-        <div className="text-center">
-          <motion.h2
-            variants={item}
-            className="text-4xl md:text-6xl font-bold font-syncopate mb-6"
+    <section ref={sectionRef} className="py-24 md:py-36 overflow-hidden">
+      <div className="px-[var(--gutter)]">
+        <SectionHeading
+          index="03 / 06"
+          label="Up close"
+          title="The"
+          accent="toolkit"
+          aside="Languages, frameworks and platforms I reach for. Drag to explore."
+        />
+      </div>
+
+      <div ref={trackRef} className="[perspective:1400px]">
+        <motion.div style={{ x: drift }}>
+          <motion.div
+            drag="x"
+            dragConstraints={trackRef}
+            dragElastic={0.12}
+            data-cursor="Drag"
+            className="flex gap-5 md:gap-8 px-[var(--gutter)] w-max active:cursor-grabbing"
           >
-            TECHNICAL <span className="text-primary">SKILLS</span>
-          </motion.h2>
-          <motion.p
-            variants={item}
-            className="text-gray-400 max-w-2xl mx-auto"
-          >
-            A curated list of technologies I use to build digital products.
-          </motion.p>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-          {SKILLS.map((skill) => (
-            <motion.div
-              key={skill.name}
-              variants={item}
-              whileHover={{ scale: 1.05, y: -5 }}
-              className="group relative"
-            >
-              <div
-                className={`absolute inset-0 bg-gradient-to-br ${skill.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl blur-xl`}
-              />
-
-              <div className="relative h-full bg-white/5 border border-white/10 backdrop-blur-sm rounded-2xl p-6 flex flex-col items-center justify-center gap-4 hover:border-white/20 transition-colors">
-                <div className="w-14 h-14 flex items-center justify-center">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={skill.logo}
-                    alt={`${skill.name} logo`}
-                    width={48}
-                    height={48}
-                    className="w-12 h-12 object-contain drop-shadow-lg"
-                    loading="lazy"
-                  />
+            {SKILLS.map((skill, i) => (
+              <motion.div
+                key={skill.name}
+                initial={{ opacity: 0, y: 60, rotateY: -25 }}
+                whileInView={{ opacity: 1, y: 0, rotateY: i % 2 ? 6 : -6 }}
+                whileHover={{ rotateY: 0, y: -10 }}
+                viewport={{ once: true, margin: "-5%" }}
+                transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: (i % 5) * 0.06 }}
+                className={`group relative shrink-0 w-[62vw] sm:w-[40vw] md:w-[22vw] aspect-[3/4] bg-secondary border border-border flex flex-col justify-between p-5 md:p-6 select-none ${
+                  i % 2 ? "md:mt-16" : ""
+                }`}
+              >
+                <div className="flex justify-between label text-foreground/50">
+                  <span>({String(i + 1).padStart(2, "0")})</span>
+                  <span>{skill.area}</span>
                 </div>
-
-                <div className="text-center">
-                  <h3 className="text-lg font-bold text-white mb-1">
-                    {skill.name}
-                  </h3>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={skill.logo}
+                  alt={`${skill.name} logo`}
+                  width={96}
+                  height={96}
+                  draggable={false}
+                  loading="lazy"
+                  className={`mx-auto h-20 w-20 md:h-24 md:w-24 object-contain grayscale group-hover:grayscale-0 transition-[filter] duration-500 ${
+                    skill.invert ? "invert" : ""
+                  }`}
+                />
+                <span className="font-display type-condensed uppercase text-4xl md:text-5xl leading-none group-hover:text-primary transition-colors duration-500">
+                  {skill.name}
+                </span>
+              </motion.div>
+            ))}
+          </motion.div>
+        </motion.div>
+      </div>
     </section>
   );
 }

@@ -13,7 +13,7 @@ export default function AppleIcon() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: '#000000',
+          background: '#111010',
           fontFamily: 'sans-serif',
           fontWeight: 900,
           fontSize: 96,
@@ -21,7 +21,7 @@ export default function AppleIcon() {
         }}
       >
         <span style={{ color: '#ffffff' }}>DD</span>
-        <span style={{ color: '#FF6B00' }}>.</span>
+        <span style={{ color: '#7B9CFF' }}>.</span>
       </div>
     ),
     { ...size }

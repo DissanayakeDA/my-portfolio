@@ -1,19 +1,22 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Syncopate } from 'next/font/google';
+import { Archivo, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import SmoothScroll from '@/components/SmoothScroll';
 import CustomCursor from "@/components/CustomCursor";
+import Preloader from '@/components/Preloader';
+import MotionPauseProvider from '@/components/MotionPause';
 
-const inter = Inter({
+const archivo = Archivo({
   subsets: ['latin'],
-  variable: '--font-inter',
+  axes: ['wdth'],
+  style: ['normal', 'italic'],
+  variable: '--font-archivo',
   display: 'swap',
 });
 
-const syncopate = Syncopate({
-  weight: ['400', '700'],
+const geistMono = Geist_Mono({
   subsets: ['latin'],
-  variable: '--font-syncopate',
+  variable: '--font-geist-mono',
   display: 'swap',
 });
 
@@ -82,7 +85,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#000000',
+  themeColor: '#111010',
   colorScheme: 'dark',
   width: 'device-width',
   initialScale: 1,
@@ -156,14 +159,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${syncopate.variable}`}>
-      <body className="antialiased bg-background text-foreground selection:bg-primary selection:text-black">
+    <html lang="en" className={`${archivo.variable} ${geistMono.variable}`}>
+      <body className="antialiased bg-background text-foreground">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <CustomCursor />
-        <SmoothScroll>{children}</SmoothScroll>
+        <SmoothScroll>
+          <Preloader>
+            <MotionPauseProvider>{children}</MotionPauseProvider>
+          </Preloader>
+        </SmoothScroll>
       </body>
     </html>
   );
