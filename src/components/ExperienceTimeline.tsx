@@ -1,97 +1,59 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { motion } from "framer-motion";
+import SectionHeading from "@/components/SectionHeading";
 
 const EXPERIENCES = [
   {
-    year: "Aug 2025 - Present",
+    year: "Aug 2025 — Now",
     role: "Trainee Software Engineer",
     company: "HashBaze",
-    description: "Developing robust web applications using Next.js and modern frontend technologies. Collaborating with senior engineers to deliver scalable code.",
-    highlight: true,
+    description:
+      "Developing robust web applications using Next.js and modern frontend technologies. Collaborating with senior engineers to deliver scalable code.",
+    current: true,
   },
   {
-    year: "Feb 2023 - Present",
-    role: "Undergraduate",
+    year: "Feb 2023 — Now",
+    role: "BSc (Hons) Information Technology",
     company: "SLIIT",
-    description: "BSc (Hons) in Information Technology. Focusing on software engineering principles and full-stack development.",
-    highlight: false,
+    description:
+      "Undergraduate focusing on software engineering principles and full-stack development.",
+    current: false,
   },
 ];
 
 export default function ExperienceTimeline() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end end"],
-  });
-
-  const scaleY = useTransform(scrollYProgress, [0, 1], [0, 1]);
-
   return (
-    <section ref={containerRef} className="relative py-32 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden">
-      <motion.h2 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="text-4xl md:text-6xl font-bold font-syncopate text-center mb-24 text-white"
-      >
-        EXPERIENCE
-      </motion.h2>
+    <section className="px-[var(--gutter)] py-24 md:py-36">
+      <SectionHeading index="05 / 06" label="Experience" title="Track" accent="record" />
 
-      <div className="relative max-w-4xl mx-auto">
-        {/* Central Line Background */}
-        <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-white/10 -translate-x-1/2" />
-        
-        {/* Glowing Progress Line */}
-        <motion.div 
-          style={{ scaleY, originY: 0 }}
-          className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary via-primary to-transparent -translate-x-1/2 shadow-[0_0_15px_#FF6B00] z-0"
-        />
+      <ul className="border-t border-border">
+        {EXPERIENCES.map((exp, i) => (
+          <motion.li
+            key={exp.role}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: i * 0.1 }}
+            className="group relative grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8 border-b border-border py-8 md:py-12"
+          >
+            <span className="absolute left-0 bottom-[-1px] h-px w-full bg-primary origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]" />
 
-        <div className="space-y-24">
-          {EXPERIENCES.map((exp, index) => (
-            <div 
-              key={index}
-              className={`relative flex flex-col md:flex-row items-start md:items-center ${
-                index % 2 === 0 ? "md:flex-row-reverse" : ""
-              }`}
-            >
-              {/* Timeline Dot */}
-              <motion.div 
-                initial={{ scale: 0, opacity: 0 }}
-                whileInView={{ scale: 1, opacity: 1 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className={`absolute left-8 md:left-1/2 w-4 h-4 rounded-full border-2 z-10 -translate-x-1/2 flex items-center justify-center
-                  ${exp.highlight ? "bg-black border-primary shadow-[0_0_20px_#FF6B00]" : "bg-black border-white/50"}`}
-              >
-                {exp.highlight && <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />}
-              </motion.div>
-
-              {/* Content Card */}
-              <div className={`ml-20 md:ml-0 md:w-1/2 ${index % 2 === 0 ? "md:pl-12" : "md:pr-12 text-right"}`}>
-                <motion.div
-                  initial={{ opacity: 0, x: index % 2 === 0 ? 50 : -50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.6, ease: "easeOut" }}
-                  className={`p-8 rounded-2xl glass-panel border hover:border-primary/30 transition-all duration-300 group
-                    ${exp.highlight ? "border-primary/20 shadow-[0_0_30px_-10px_rgba(255,107,0,0.15)]" : "border-white/5"}`}
-                >
-                  <span className="text-primary font-mono text-sm tracking-widest">{exp.year}</span>
-                  <h3 className="text-2xl font-bold text-white mt-2 mb-1 font-syncopate">{exp.role}</h3>
-                  <div className="text-white/60 font-medium mb-4">{exp.company}</div>
-                  <p className="text-gray-400 font-light leading-relaxed">
-                    {exp.description}
-                  </p>
-                </motion.div>
-              </div>
+            <div className="md:col-span-3 label text-foreground/50 flex items-center gap-2">
+              {exp.current && <span className="h-1.5 w-1.5 rounded-full bg-primary" />}({exp.year})
             </div>
-          ))}
-        </div>
-      </div>
+            <div className="md:col-span-6">
+              <h3 className="font-display type-condensed uppercase leading-[0.9] text-4xl md:text-6xl group-hover:text-primary transition-colors duration-500">
+                {exp.role}
+              </h3>
+              <p className="mt-4 text-foreground/60 max-w-xl leading-relaxed">{exp.description}</p>
+            </div>
+            <div className="md:col-span-3 md:text-right">
+              <span className="font-display italic font-light text-2xl md:text-3xl">@{exp.company}</span>
+            </div>
+          </motion.li>
+        ))}
+      </ul>
     </section>
   );
 }

@@ -1,127 +1,168 @@
 "use client";
 
-import { motion, useScroll, useMotionValueEvent } from "framer-motion";
-import { useState } from "react";
-import { Link } from "react-scroll"; 
-import { Menu, X } from "lucide-react";
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { useLenis } from "lenis/react";
+import { useEffect, useState } from "react";
+import Magnetic from "@/components/Magnetic";
+import RollText from "@/components/RollText";
+import LocalTime from "@/components/LocalTime";
+import { useLoaded } from "@/components/Preloader";
 
 const navLinks = [
-  { name: "About", href: "hero" },
-  { name: "Skills", href: "skills" },
-  { name: "Experience", href: "experience" },
-  { name: "Live", href: "live" },
   { name: "Work", href: "work" },
+  { name: "About", href: "about" },
+  { name: "Skills", href: "skills" },
+  { name: "Services", href: "services" },
+  { name: "Experience", href: "experience" },
   { name: "Contact", href: "contact" },
 ];
 
-import Magnetic from "@/components/Magnetic";
+const EASE_OUT = [0.16, 1, 0.3, 1] as const;
+const EASE_IN_OUT = [0.76, 0, 0.24, 1] as const;
+
+export function Logo() {
+  return (
+    <span className="inline-flex items-baseline gap-1 text-lg md:text-xl leading-none">
+      <span className="font-display type-condensed uppercase tracking-tight">Dumindu</span>
+      <span className="font-display italic font-light">
+        <span className="bg-primary text-background px-[3px] not-italic font-medium">d</span>issanayake
+      </span>
+    </span>
+  );
+}
 
 export default function Navbar() {
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const { scrollY } = useScroll();
+  const lenis = useLenis();
+  const loaded = useLoaded();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious() ?? 0;
-    if (latest > previous && latest > 150) {
-      setHidden(true);
-    } else {
-      setHidden(false);
-    }
-    
-    if (latest > 50) {
-      setScrolled(true);
-    } else {
-      setScrolled(false);
-    }
+    setHidden(latest > previous && latest > 200);
+    setScrolled(latest > 50);
   });
+
+  useEffect(() => {
+    if (!lenis) return;
+    if (menuOpen) lenis.stop();
+    else lenis.start();
+  }, [lenis, menuOpen]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMenuOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const scrollTo = (id: string) => {
+    setMenuOpen(false);
+    const el = document.getElementById(id);
+    if (!el) return;
+    // Wait a tick so Lenis is restarted after the menu closes
+    requestAnimationFrame(() => {
+      if (lenis) lenis.scrollTo(el, { duration: 1.6 });
+      else el.scrollIntoView({ behavior: "smooth" });
+    });
+  };
 
   return (
     <>
       <motion.nav
-        variants={{
-          visible: { y: 0 },
-          hidden: { y: "-100%" },
-        }}
-        animate={hidden ? "hidden" : "visible"}
-        transition={{ duration: 0.35, ease: "easeInOut" }}
-        className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-          scrolled ? "bg-black/50 backdrop-blur-md border-b border-white/5 py-4" : "bg-transparent py-6"
+        initial={{ y: "-100%" }}
+        animate={{ y: !loaded || (hidden && !menuOpen) ? "-100%" : "0%" }}
+        transition={{ duration: 0.7, ease: EASE_OUT }}
+        className={`fixed top-0 inset-x-0 z-[60] transition-[background-color,border-color] duration-500 border-b ${
+          scrolled && !menuOpen
+            ? "bg-background/80 backdrop-blur-md border-border"
+            : "bg-transparent border-transparent"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 md:px-8 flex justify-between items-center">
-          {/* Logo */}
+        <div className="px-[var(--gutter)] h-16 md:h-20 grid grid-cols-2 md:grid-cols-3 items-center">
           <Magnetic>
-            <a href="#" className="text-xl md:text-2xl font-bold font-syncopate tracking-tighter text-white inline-block">
-              DD<span className="text-primary">.</span>
-            </a>
+            <button
+              onClick={() => (lenis ? lenis.scrollTo(0) : window.scrollTo({ top: 0, behavior: "smooth" }))}
+              className="text-foreground"
+              aria-label="Back to top"
+            >
+              <Logo />
+            </button>
           </Magnetic>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <Magnetic key={link.name}>
-                <Link
-                  to={link.href}
-                  smooth={true}
-                  duration={500}
-                  className="text-sm font-light tracking-widest text-white/70 hover:text-primary transition-colors uppercase cursor-pointer block px-2"
-                >
-                  {link.name}
-                </Link>
-              </Magnetic>
-            ))}
+          <span className="hidden md:block text-center label text-foreground/50">
+            (Portfolio / ©{new Date().getFullYear()})
+          </span>
+
+          <div className="flex items-center justify-end gap-6">
+            <span className="hidden lg:inline label text-foreground/50">
+              Colombo — <LocalTime />
+            </span>
             <Magnetic>
-              <Link
-                to="contact"
-                smooth={true}
-                duration={500}
-                className="bg-white/5 border border-white/10 px-6 py-2 rounded-full text-xs font-bold tracking-widest uppercase hover:bg-primary hover:text-black hover:border-primary transition-all duration-300 cursor-pointer"
+              <button
+                onClick={() => setMenuOpen((o) => !o)}
+                aria-expanded={menuOpen}
+                aria-controls="site-menu"
+                className="group label text-foreground"
               >
-                Let&apos;s Talk
-              </Link>
+                (<RollText>{menuOpen ? "Close" : "Menu"}</RollText>)
+              </button>
             </Magnetic>
           </div>
-
-          {/* Mobile Menu Toggle */}
-          <button 
-            className="md:hidden text-white"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X /> : <Menu />}
-          </button>
         </div>
       </motion.nav>
 
-      {/* Mobile Menu Overlay */}
-      <motion.div
-        initial={false}
-        animate={mobileMenuOpen ? { opacity: 1, pointerEvents: "auto" } : { opacity: 0, pointerEvents: "none" }}
-        className="fixed inset-0 z-40 bg-black/95 backdrop-blur-xl md:hidden flex flex-col justify-center items-center gap-8"
-      >
-        {navLinks.map((link) => (
-          <Link
-            key={link.name}
-            to={link.href}
-            smooth={true}
-            duration={500}
-            onClick={() => setMobileMenuOpen(false)}
-            className="text-2xl font-syncopate font-bold text-white hover:text-primary transition-colors cursor-pointer"
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            id="site-menu"
+            initial={{ clipPath: "inset(0 0 100% 0)" }}
+            animate={{ clipPath: "inset(0 0 0% 0)" }}
+            exit={{ clipPath: "inset(0 0 100% 0)" }}
+            transition={{ duration: 0.9, ease: EASE_IN_OUT }}
+            className="fixed inset-0 z-50 bg-background flex flex-col justify-between px-[var(--gutter)] pt-24 md:pt-28 pb-8"
           >
-            {link.name}
-          </Link>
-        ))}
-        <Link
-          to="contact"
-          smooth={true}
-          duration={500}
-          onClick={() => setMobileMenuOpen(false)}
-          className="mt-8 bg-primary text-black px-8 py-3 rounded-full font-bold tracking-widest uppercase cursor-pointer"
-        >
-          Let&apos;s Talk
-        </Link>
-      </motion.div>
+            <ul className="border-t border-border">
+              {navLinks.map((link, i) => (
+                <li key={link.name} className="border-b border-border overflow-hidden">
+                  <motion.button
+                    initial={{ y: "100%" }}
+                    animate={{ y: "0%" }}
+                    exit={{ y: "100%" }}
+                    transition={{ duration: 0.8, ease: EASE_OUT, delay: 0.25 + i * 0.06 }}
+                    onClick={() => scrollTo(link.href)}
+                    className="group w-full flex items-center justify-between py-1 md:py-0 text-left"
+                  >
+                    <span
+                      className="font-display uppercase leading-[0.95] text-[13vw] md:text-[7.2vw] text-foreground group-hover:text-primary transition-[font-variation-settings,color] duration-700 [font-variation-settings:'wdth'_68,'wght'_850] group-hover:[font-variation-settings:'wdth'_125,'wght'_150]"
+                    >
+                      {link.name}
+                    </span>
+                    <span className="label text-foreground/40 group-hover:text-primary transition-colors">
+                      ({String(i + 1).padStart(2, "0")})
+                    </span>
+                  </motion.button>
+                </li>
+              ))}
+            </ul>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1, transition: { delay: 0.7 } }}
+              exit={{ opacity: 0, transition: { duration: 0.2 } }}
+              className="flex flex-col md:flex-row md:justify-between gap-2 label text-foreground/50"
+            >
+              <a href="mailto:dumindudissanayake2k01@gmail.com" className="hover:text-primary transition-colors">
+                dumindudissanayake2k01@gmail.com
+              </a>
+              <span>
+                Colombo — <LocalTime />
+              </span>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
